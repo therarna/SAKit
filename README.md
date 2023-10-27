@@ -6,11 +6,11 @@
       <br>
                     TAA_selection pipeline
       <br>
-      <a href="https://github.com/wuzengding/pipeline_SAKit/"><img src="img/Figure1.pipeline.png" alt="Figure1.pipeline" width="1000"></a>
+      <a href="https://github.com/therarna/pipeline_SAKit/"><img src="img/Figure1.pipeline.png" alt="Figure1.pipeline" width="1000"></a>
       <br>
     </h3>
 # Install from github
-`git clone git@github.com:wuzengding/pipeline_SAKit.git`
+`git clone git@github.com:therarna/pipeline_SAKit.git`
 
 # Utilise
 ## Prerequisites
