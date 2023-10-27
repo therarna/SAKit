@@ -6,21 +6,22 @@ rule SV_calling:
     output:
         pbsv_svsig = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.svsig.gz".format(SampleID)),
         pbsv_vcf = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.var.vcf".format(SampleID)),
-        pbsv_vcf_annot = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.annot.var.vcf".format(SampleID)),
-        report = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.html".format(SampleID)),
-        pbsv_vcf_annot_tsv = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.annot.var.tsv".format(SampleID)),
+        pbsv_vcf_annot = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.snpeff.vcf".format(SampleID)),
+        report = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.snpeff.html".format(SampleID)),
+        pbsv_vcf_annot_tsv = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant.snpeff.tsv".format(SampleID)),
     
     params:
         genome = config["Reference"]["genome"],
+        pbsv = config["SoftwareTools"]["pbsv"],
         min_ref_span= config["PBsvParam"]["min_ref_span"],
         call_min_read_perc_one_sample = config["PBsvParam"]["call_min_read_perc_one_sample"],
         ccs_flag = "--ccs",
-        snpeff_java_mem = "-Xmx8g",
         snpeff = config["SoftwareTools"]["snpeff"],
         snpsift = config["SoftwareTools"]["snpsift"],
         species = config["Reference"]["species"],
         sep = "';'",
-        empty = "'.'"
+        empty = "'.'",
+        prefix = os.path.join(outpath,"results/08.SvInDelSnvCalling/{0}.structure_variant".format(SampleID))
 
 
 
@@ -37,23 +38,22 @@ rule SV_calling:
             species = "mm10"
 
         shell("""
-            pbsv discover \
+            {params.pbsv} discover \
                 -m {params.min_ref_span} \
                 {input.hq_mapped_hg38_bam} {output.pbsv_svsig} > {log} 2>&1
 
-            pbsv call  \
+            {params.pbsv} call  \
             -P {params.call_min_read_perc_one_sample} \
             {params.ccs_flag} \
             -j {threads} \
             {params.genome}  {output.pbsv_svsig}  {output.pbsv_vcf} >> {log} 2>&1
 
-            java {params.snpeff_java_mem} \
-                 -jar {params.snpeff} \
-                 -v -stats {output.report} {species} {output.pbsv_vcf} > {output.pbsv_vcf_annot} 2> {log}
+            /usr/bin/java -Xmx20g -jar {params.snpeff}/snpEff.jar \
+            -c {params.snpeff}/snpEff.config \
+            -noLog -v -stats {output.report} {species} \
+            -fastaProt {params.prefix}.prot.fa  \
+            {output.pbsv_vcf} > {output.pbsv_vcf_annot} 2> {log}
             
-            java {params.snpeff_java_mem} \
-                 -jar {params.snpsift} extractFields \
+            /usr/bin/java -Xmx20g -jar {params.snpsift}/SnpSift.jar extractFields \
                  -s {params.sep} -e {params.empty} {output.pbsv_vcf_annot}  CHROM POS END SVLEN SVTYPE FILTER ANN[*].GENE ANN[*].IMPACT ANN[*].EFFECT ANN[*].RANK > {output.pbsv_vcf_annot_tsv} 2> {log}
-            
-
-        """)
+            """)

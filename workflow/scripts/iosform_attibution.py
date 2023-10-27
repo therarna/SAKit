@@ -9,6 +9,7 @@ import argparse
 import time
 import re
 import sys
+import pandas as pd
 
 
 #Transcript2gene = config["transcript2gene"]
@@ -59,10 +60,10 @@ def geneid_to_gene_name(Transcript2gene):
     return g2genename
 
 
-def attribute_gene_names_isoforms( event_results_input):
+def attribute_gene_names_isoforms(event_results_input,Transcript2gene):
     #print(event_results_input['attributed_gene'][1:10])
     gid2g={}
-    geneid_to_gene_name_df =  geneid_to_gene_name( )
+    geneid_to_gene_name_df =  geneid_to_gene_name(Transcript2gene)
     for gene, gene_name in zip(geneid_to_gene_name_df['gene'], geneid_to_gene_name_df['gene_name']):
         gid2g[gene_name]=gene
     #print(gid2g.keys())
@@ -71,7 +72,7 @@ def attribute_gene_names_isoforms( event_results_input):
     #print(gid2g["B3GALT6"])
     attributed_gene_id = []
 
-    for geneid in event_results_input['attributed_gene']:
+    for geneid in event_results_input['associated_gene']:
         if type( geneid ) == str:
             if  not geneid.startswith("novelGene"):
                 geneid_split = geneid.split('_')
@@ -112,6 +113,7 @@ if __name__ == "__main__":
     parser.add_argument('-c','--collapsed_stat', help='Isoforms read statistic')
     parser.add_argument('-i','--isoform_class', help='Isoforms classification')
     parser.add_argument('-f','--isoform_class_filter', help='Isoforms classification filtered ')
+    parser.add_argument('-t','--tr2gene', help='transcript to gene')
     parser.add_argument('-o','--output1', help="output path")
     parser.add_argument('-u','--output2', help="prefix of output files")
     
@@ -119,28 +121,29 @@ if __name__ == "__main__":
     collapsed_stat = args.collapsed_stat
     isoform_class = args.isoform_class
     isoform_class_filter = args.isoform_class_filter
+    Transcript2gene = args.tr2gene
     output1 = args.output1
     output2 = args.output2
     
-    pythonpath = config["Env"]["python_lib"]
+    #pythonpath = config["Env"]["python_lib"]
     event_results = attribute_ccs_read_counts( \
                       isoform_class_filter, 
                       collapsed_stat, 
                       event_type = "isoform" )
     
+    print(event_results.head(10))
     event_results_unflitered = attribute_ccs_read_counts( \
                      isoform_class , 
                      collapsed_stat, 
                      event_type = "isoform" )
                      
-    event_results_gene_names_added = attribute_gene_names_isoforms( \
-                     event_results )
+    event_results_gene_names_added = attribute_gene_names_isoforms(event_results,Transcript2gene )
 
-    event_results_unflitered_gene_names_added = attribute_gene_names_isoforms( \
-                                event_results_unflitered )
+    event_results_unflitered_gene_names_added = attribute_gene_names_isoforms(event_results_unflitered, Transcript2gene )
 
     event_filtered_out_results =  filtered_out_lite_classification_isoforms( \
-                                event_results_unflitered_gene_names_added , event_results_gene_names_added )
+                                event_results_unflitered_gene_names_added ,\
+                                event_results_gene_names_added )
     
     event_results_gene_names_added.to_csv( \
                                 output1, 

@@ -6,6 +6,7 @@ Reference:
   bedfile: /mnt/data2/wuzengding/00.database/bed_hg38_hg19/hg38_RefSeq.bed
   star_index: /mnt/data2/wuzengding/00.database/SIRV_ERCC/index_hg38_SIRV_ERCC_STAR
 
+SampleYml: /mnt/data2/wuzengding/05.pipeline_dev/pipeline_SAKit_v1.0/config/sample.yml
 OUTPATH: /mnt/data2/wuzengding/05.pipeline_dev/temp/result2
 
 Env:
@@ -18,16 +19,17 @@ Database:
   transcript2gene: /mnt/data2/wuzengding/00.database/SIRV_ERCC/gtf_hg38_SIRV_ERCC/gencode.v32.annotation.tr2g_gtf.tsv
   
 SoftwareTools:
-  index: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/pbindex
-  bam2fastq: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/bam2fastq
-  minimap2: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/minimap2
-  align_sv: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/pbmm2
+  index: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/pbindex
+  bam2fastq: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/bam2fastq
+  minimap2: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/minimap2
+  align_sv: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/pbmm2
+  pbsv: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/pbsv
   short_reads_align: /mnt/data2/wuzengding/03.biotools/miniconda3/bin/STAR
   picard: /mnt/data2/wuzengding/03.biotools/software/picard/build/libs/picard.jar
   snpeff: /mnt/data2/wuzengding/03.biotools/software/snpEff
   snpsift: /mnt/data2/wuzengding/03.biotools/software/snpEff
-  vardict: /mnt/data2/wuzengding/03.biotools/software/VarDictJava/build/install/VarDict
-  samtools: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/samtools
+  vardict: /mnt/data2/wuzengding/03.biotools/software/VarDictJava
+  samtools: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/samtools
 
 ScriptTools:
   sqanti_qc: /mnt/data2/wuzengding/03.biotools/software/SQANTI3-4.2/sqanti3_qc.py
@@ -48,7 +50,7 @@ InhouseScript:
 ccs:
   software:
     ccsscript:
-    ccstool: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/ccs
+    ccstool: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/ccs
     fqtosam: /mnt/data2/wuzengding/03.biotools/software/picard/build/libs/picard.jar
   parameter:
     minpass: 3
@@ -63,7 +65,7 @@ ccs:
 demultiplex:
   software:
     limascript:
-    limatool: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/lima
+    limatool: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/lima
   configfile:
     barcodefa: /mnt/data2/wuzengding/02.ResDev/00.config/primer.fa
 
@@ -81,7 +83,7 @@ demultiplex:
     thread: 10
 refine:
   software:
-    refinetool: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/isoseq3
+    refinetool: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/isoseq3
     refinescript: 
   configfile: 
     primerfa: /mnt/data2/wuzengding/02.ResDev/00.config/primer.fa
@@ -92,7 +94,7 @@ refine:
     thread: 10
 cluster:
   software:
-    clustertool: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/isoseq3
+    clustertool: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/isoseq3
     clusterscript: 
   parameter: 
     poa: 10
@@ -101,7 +103,7 @@ cluster:
     thread: 10
     
 align:
-  software: /mnt/data2/wuzengding/02.smrtlink/smrtlink/smrtcmds/bin/minimap2
+  software: /mnt/data2/wuzengding/03.biotools/pacbio_smrtlink/smrtlink/smrtcmds/bin/minimap2
   parameter:
       ax: splice
       secondary: no
@@ -112,7 +114,7 @@ align:
       
 collapse:
   parameter:
-    short5: -dun-merge-5-shorter 
+    short5: --dun-merge-5-shorter 
     mincov: 0.99 
     miniden: 0.95
     
@@ -120,7 +122,6 @@ collapse:
 isoform_filter_bycounts:
   parameter:
     cutoff: 2 
-    use_group_count: off
 
 PBsvParam:
   min_ref_span: 50

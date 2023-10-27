@@ -9,25 +9,19 @@ import argparse
 import time
 import re
 import sys
+import pandas as pd
 
 
-DISGENET = config["Database"]["disgenet"]
-def dis_gene_asso(isoform_final_result):
+def dis_gene_asso(isoform_final_result,DISGENET):
     """
         Gets DisGeNET file and associates the infor with sqanti3_final_results.tsv
     """
 
-    dis_gene_network_df = pd.read_csv( \
-                                             DISGENET, 
-                                             sep = '\t'
-                                        )
-    isoform_final_result_df = pd.read_csv( \
-                                                 isoform_final_result, 
-                                                 sep = '\t'
-                                                )
+    dis_gene_network_df = pd.read_csv(DISGENET, sep = '\t')
+    
+    isoform_final_result_df = pd.read_csv(isoform_final_result,sep = '\t')
 
-    dis_gene_network_df_dis_name = dis_gene_network_df.groupby( \
-                                                                ["geneSymbol"])["diseaseName"].apply(', '.join).reset_index()
+    dis_gene_network_df_dis_name = dis_gene_network_df.groupby(["geneSymbol"])["diseaseName"].apply(', '.join).reset_index()
     dis_gene_network_df_dis_type = dis_gene_network_df.groupby(["geneSymbol"])["diseaseType"].apply(', '.join).reset_index()
 
     result = pd.merge(dis_gene_network_df_dis_name, dis_gene_network_df_dis_type, on='geneSymbol')
@@ -42,13 +36,15 @@ def dis_gene_asso(isoform_final_result):
 if __name__ == "__main__":
     data_start = time.time()
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "gene annotation")
-    parser = argparse.ArgumentParser(description='disease annotation of gene )
+    parser = argparse.ArgumentParser(description='disease annotation of gene')
     parser.add_argument('-i','--infile', help='Isoforms class final result')
+    parser.add_argument('-d','--digenet',help='disgenet database')
     parser.add_argument('-o','--output', help="output file")
     
     args = parser.parse_args()
     infile = args.infile
+    DISGENET = args.digenet
     output = args.output
     
-    disease_associate =  dis_gene_asso(infile)
+    disease_associate =  dis_gene_asso(infile,DISGENET)
     disease_associate.to_csv(output,sep="\t", index=False)

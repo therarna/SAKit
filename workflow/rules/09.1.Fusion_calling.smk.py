@@ -6,17 +6,17 @@ rule Fusion_calling:
         cluster_report = rules.Cluster.output.cluster_report
 
     output:
-        fusion_gff = os.path.join(outpath,"results/06.Fusion_calling/{sample}.isoforms.fusion.gff".format(sample=SampleID)),
-        fusion_rep = os.path.join(outpath,"results/06.Fusion_calling/{sample}.isoforms.fusion.rep.fa".format(sample=SampleID)),
-        fusion_rename_rep = os.path.join(outpath,"results/06.Fusion_calling/{sample}.isoforms.fusion.rep.rename.fa".format(sample=SampleID)),
-        fusion_abundance = os.path.join(outpath,"results/06.Fusion_calling/{sample}.isoforms.fusion.abundance.txt".format(sample=SampleID)),
-        fusion_finder_stat= os.path.join(outpath,"results/06.Fusion_calling/{sample}.isoforms.fusion.read_stat.txt".format(sample=SampleID)),
+        fusion_gff = os.path.join(outpath,"results/06.Fusion_calling/{sample}.fusion.gff".format(sample=SampleID)),
+        fusion_rep = os.path.join(outpath,"results/06.Fusion_calling/{sample}.fusion.rep.fa".format(sample=SampleID)),
+        fusion_rename_rep = os.path.join(outpath,"results/06.Fusion_calling/{sample}.fusion.rep.rename.fa".format(sample=SampleID)),
+        fusion_abundance = os.path.join(outpath,"results/06.Fusion_calling/{sample}.fusion.abundance.txt".format(sample=SampleID)),
+        fusion_finder_stat= os.path.join(outpath,"results/06.Fusion_calling/{sample}.fusion.read_stat.txt".format(sample=SampleID)),
 
     params:
         min_locus_coverage = 0.05,
         min_total_coverage = 0.99,
         min_dist_between_loci = 10000,
-        prefix_fusion_finder_out = os.path.join(outpath,"results/06.Fusion_calling/{sample}.isoforms.fusion".format(sample=SampleID))
+        prefix_fusion_finder_out = os.path.join(outpath,"results/06.Fusion_calling/{sample}.fusion".format(sample=SampleID))
 
     threads:
         1

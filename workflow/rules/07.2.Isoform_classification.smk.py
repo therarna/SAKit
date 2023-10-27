@@ -8,18 +8,18 @@ rule Isoform_classification:
         
 
     output:
-        os.path.join(outpath,"results/05.Isoform_Novel/{sample}_isoform_classification.txt".format(sample=SampleID)),
-        os.path.join(outpath,"results/05.Isoform_Novel/{sample}_isoform_junctions.txt".format(sample=SampleID)),
-        os.path.join(outpath,"results/05.Isoform_Novel/{sample}_isoform_corrected.fasta".format(sample=SampleID)),
-        os.path.join(outpath,"results/05.Isoform_Novel/{sample}_isoform_corrected.gtf".format(sample=SampleID)),
-        os.path.join(outpath,"results/05.Isoform_Novel/{sample}_isoform_corrected.faa".format(sample=SampleID)),
+        os.path.join(outpath,"results/05.Isoform_Novel/{sample}.isoform_classification.txt".format(sample=SampleID)),
+        os.path.join(outpath,"results/05.Isoform_Novel/{sample}.isoform_junctions.txt".format(sample=SampleID)),
+        os.path.join(outpath,"results/05.Isoform_Novel/{sample}.isoform_corrected.fasta".format(sample=SampleID)),
+        os.path.join(outpath,"results/05.Isoform_Novel/{sample}.isoform_corrected.gtf".format(sample=SampleID)),
+        os.path.join(outpath,"results/05.Isoform_Novel/{sample}.isoform_corrected.faa".format(sample=SampleID)),
     
     params:
         pythonpath = config["Env"]["python_lib"],
         aligner = "minimap2",
         chunks = 5,
         isoannot = "--isoAnnotLite",
-        outprefix = SampleID,
+        outprefix = ".".join([SampleID,"isoform"]),
         output_dir = os.path.join(outpath, "results/05.Isoform_Novel/"),
         isoannotlitegff3 = config["Reference"]["annotgff3"],
         genome = config["Reference"]["genome"],
@@ -45,7 +45,7 @@ rule Isoform_classification:
                         --chunks {params.chunks}  \
                         -o {params.outprefix} \
                         {params.isoannot} \
-                        --gff3 {params.annotgff3}  \
+                        --gff3 {params.isoannotlitegff3}  \
                         --fl_count {input.fl_count_file}  \
                         --orf_input {params.orf_input_path} \
                         {input.collapsed_isoform_gtf} {params.genome_annotation}  {params.genome} >{log} 2>&1
@@ -63,7 +63,7 @@ rule Isoform_classification:
                         --chunks {params.chunks}  \
                         -o {params.outprefix} \
                         {params.isoannot} \
-                        --gff3 {params.annotgff3}  \
+                        --gff3 {params.isoannotlitegff3}  \
                         --fl_count {input.fl_count_file}  \
                         --orf_input {params.orf_input_path} \
                         --expression {expression} \

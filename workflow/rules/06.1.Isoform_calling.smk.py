@@ -14,7 +14,7 @@ rule Isoform_calling:
         short5merge = config["collapse"]["parameter"]["short5"],
         mincov = config["collapse"]["parameter"]["mincov"],
         miniden = config["collapse"]["parameter"]["miniden"],
-        prefix = os.path.join(outpath,"results/04.Isoform_Calling/{sample}.".format(sample=SampleID)),
+        prefix = os.path.join(outpath,"results/04.Isoform_Calling/{sample}".format(sample=SampleID)),
         fq = ""
 
 
@@ -30,6 +30,7 @@ rule Isoform_calling:
             --input {input.hq_transcripts} \
             {params.fq} \
             -s  {input.sorted_sam}  \
-            -o {params.prefix} {params.short5merge} 
-            {params.mincov} {params.miniden} > {log} 2>&1
+            -o {params.prefix} {params.short5merge}  \
+            -c {params.mincov} \
+            -i {params.miniden} > {log} 2>&1
         """

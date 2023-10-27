@@ -10,6 +10,7 @@ import time
 import re
 import sys
 from iosform_attibution import geneid_to_gene_name
+import pandas as pd
 
 include: "sqanti3_classification_results.smk.py"
 
@@ -105,6 +106,7 @@ if __name__ == "__main__":
     parser.add_argument('-f','--fusion_class_final_result', help='Fusion classification final results')
     parser.add_argument('-o','--output_file',help="output file of fusion classification final results")
     parser.add_argument('-d','--fusion_database',help="fusion hub  database")
+    parser.add_argument('-r','--tr2gene', help='transcript to gene')
     parser.add_argument('-t','--thread_num',help="thread number")
     
     args = parser.parse_args()
@@ -112,8 +114,9 @@ if __name__ == "__main__":
     output_file = args.output_file
     fusion_database = args.fusion_database
     thread_num = args.thread_num
+    Transcript2gene = args.tr2gene
 
-    geneid_2_gene_name =  geneid_to_gene_name( )
+    geneid_2_gene_name =  geneid_to_gene_name( Transcript2gene)
     read_fusion_candidates = read_fusion_table(fusion_class_final_result)
     fusion_name_left_gene = read_fusion_candidates.LeftGeneName.str.split( \
                                  "_", expand=False \
@@ -132,6 +135,7 @@ if __name__ == "__main__":
     both_found = []
     false_pos_db = []
     false_pos_db_perc = []
+    no_databases_false_pos = []
     gid2g={}
     fusion_events = fusionhub_global_summary['Fusion_gene']
 
@@ -206,7 +210,7 @@ if __name__ == "__main__":
     read_fusion_candidates['FusionName2'] = [i +"--" + j for i, j in zip(gene1, gene2)]
     read_fusion_candidates['Found Status'] = both_found
     read_fusion_candidates['No_DB'] =  no_fusion_db
-    read_fusion_candidates['No_None_Disease_DB'] =  no_databases_false_pos
+    #read_fusion_candidates['No_None_Disease_DB'] =  no_databases_false_pos
     read_fusion_candidates['None_Disease_DB%'] =  false_pos_db_perc
     read_fusion_candidates['DB'] =  fusion_db_list
 
