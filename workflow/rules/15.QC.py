@@ -1,6 +1,5 @@
 rule QC:
     input:
-        #ccsxml = rules.CCS.output.ccsxml,
         bamfile = rules.Align.output.flnc_bamsort_tx
     output:
         qcsum = os.path.join(outpath,"results/00.QC/{0}.runqc.txt".format(SampleID))
@@ -27,8 +26,7 @@ rule QC:
     threads: 20
     
     shell:
-        """
-        #{params.qctool} {input.ccsxml} -o {params.outpath} > {output.qcsum} 2>&1 
+        """ 
         
         {params.pytool} {params.rseqc}/geneBody_coverage.py -i {input.bamfile} \
         -r {params.bedfile} -o {params.outpath}/{SampleID} > {log.log_geneBody_coverage} 2>&1
