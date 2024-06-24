@@ -229,8 +229,8 @@ class MutationPeptideGenerator:
 
             if (ref_peptide != "") and (var_peptide != ""):
                 non_standard_hgvs_p = convert_hgvs_to_non_standard(hgvs_p)
-                ref_peptides.append(f'>Ref {transcript_id}\n{ref_peptide}')
-                var_peptides.append(f'>Var {transcript_id}({gene_name}):{hgvs_p} {non_standard_hgvs_p} \n{var_peptide}')
+                ref_peptides.append(f'>Ref|{transcript_id}\n{ref_peptide}')
+                var_peptides.append(f'>Var|{transcript_id}|{gene_name}|{hgvs_p}|{non_standard_hgvs_p} \n{var_peptide}')
             else:
                 print(f'{hgvs_p} was filtered, please check it' )
         return ref_peptides, var_peptides
